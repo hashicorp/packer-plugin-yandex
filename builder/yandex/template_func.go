@@ -1,4 +1,4 @@
-package googlecompute
+package yandex
 
 import (
 	"strings"
@@ -15,10 +15,10 @@ func isalphanumeric(b byte) bool {
 	return false
 }
 
-// Clean up image name by replacing invalid characters with "-"
+// Clean up resource name by replacing invalid characters with "-"
 // and converting upper cases to lower cases
-func templateCleanImageName(s string) string {
-	if validImageName.MatchString(s) {
+func templateCleanResourceName(s string) string {
+	if reImageFamily.MatchString(s) {
 		return s
 	}
 	b := []byte(strings.ToLower(s))
@@ -34,5 +34,5 @@ func templateCleanImageName(s string) string {
 }
 
 var TemplateFuncs = template.FuncMap{
-	"clean_resource_name": templateCleanImageName,
+	"clean_resource_name": templateCleanResourceName,
 }
