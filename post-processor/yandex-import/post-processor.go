@@ -12,11 +12,11 @@ import (
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
-	"github.com/hashicorp/packer/builder/file"
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
+	yandexexport "github.com/hashicorp/packer-plugin-yandex/post-processor/yandex-export"
+	"github.com/hashicorp/packer/builder/file"
 	"github.com/hashicorp/packer/post-processor/artifice"
 	"github.com/hashicorp/packer/post-processor/compress"
-	yandexexport "github.com/hashicorp/packer/post-processor/yandex-export"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/iam/v1/awscompatibility"
 )
 
