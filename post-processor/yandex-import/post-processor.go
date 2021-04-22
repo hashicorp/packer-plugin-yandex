@@ -12,7 +12,7 @@ import (
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
-	"github.com/hashicorp/packer-plugin-yandex/builder/file"
+	"github.com/hashicorp/packer/builder/file"
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 	"github.com/hashicorp/packer/post-processor/artifice"
 	"github.com/hashicorp/packer/post-processor/compress"

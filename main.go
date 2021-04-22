@@ -8,6 +8,8 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/version"
 
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
+	yandexexport "github.com/hashicorp/packer-plugin-yandex/post-processor/yandex-export"
+	yandeximport "github.com/hashicorp/packer-plugin-yandex/post-processor/yandex-import"
 )
 
 var (
@@ -27,6 +29,8 @@ var (
 func main() {
 	pps := plugin.NewSet()
 	pps.RegisterBuilder(plugin.DEFAULT_NAME, new(yandex.Builder))
+	pps.RegisterPostProcessor("import", new(yandeximport.PostProcessor))
+	pps.RegisterPostProcessor("export", new(yandexexport.PostProcessor))
 	pps.SetVersion(PluginVersion)
 	err := pps.Run()
 	if err != nil {
