@@ -48,14 +48,18 @@ func TestBuilderAcc_instanceSA(t *testing.T) {
 
 func testAccPreCheck(t *testing.T) {
 	if v := os.Getenv("YC_TOKEN"); v == "" {
-		t.Fatal("YC_TOKEN must be set for acceptance tests")
+		t.Skip("YC_TOKEN must be set for acceptance tests")
 	}
 	if v := os.Getenv("YC_FOLDER_ID"); v == "" {
-		t.Fatal("YC_FOLDER_ID must be set for acceptance tests")
+		t.Skip("YC_FOLDER_ID must be set for acceptance tests")
 	}
 }
 
 func testAccPreCheckInstanceSA(t *testing.T) {
+	if v := os.Getenv("YC_FOLDER_ID"); v == "" {
+		t.Skip("YC_FOLDER_ID must be set for acceptance tests")
+	}
+
 	client := resty.New()
 
 	_, err := client.R().SetHeader("Metadata-Flavor", "Google").Get(tokenUrl())
@@ -63,9 +67,6 @@ func testAccPreCheckInstanceSA(t *testing.T) {
 		t.Fatalf("error get Service Account token assignment: %s", err)
 	}
 
-	if v := os.Getenv("YC_FOLDER_ID"); v == "" {
-		t.Fatal("YC_FOLDER_ID must be set for acceptance tests")
-	}
 }
 
 const testBuilderAccBasic = `
