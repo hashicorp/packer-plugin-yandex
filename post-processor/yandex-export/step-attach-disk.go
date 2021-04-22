@@ -7,7 +7,7 @@ import (
 	"github.com/c2h5oh/datasize"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/builder/yandex"
+	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
 )
 

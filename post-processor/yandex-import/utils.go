@@ -9,7 +9,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/builder/yandex"
+	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
 )
 

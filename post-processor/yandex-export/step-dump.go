@@ -10,7 +10,7 @@ import (
 
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
-	"github.com/hashicorp/packer/builder/yandex"
+	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 )
 
 type StepDump struct {
