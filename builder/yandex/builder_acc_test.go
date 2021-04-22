@@ -3,11 +3,11 @@ package yandex
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/go-resty/resty/v2"
-
-	builderT "github.com/hashicorp/packer-plugin-sdk/acctest"
+	"github.com/hashicorp/packer-plugin-sdk/acctest"
 )
 
 const InstanceMetadataAddr = "169.254.169.254"
@@ -16,7 +16,7 @@ func TestBuilderAcc_basic(t *testing.T) {
 	testAccPreCheck(t)
 	testCase := &acctest.PluginTestCase{
 		Name:     "yandex_basic_test",
-		Template: testBuilderAccBasic,		
+		Template: testBuilderAccBasic,
 		Check: func(buildCommand *exec.Cmd, logfile string) error {
 			if buildCommand.ProcessState != nil {
 				if buildCommand.ProcessState.ExitCode() != 0 {
@@ -25,14 +25,14 @@ func TestBuilderAcc_basic(t *testing.T) {
 			}
 			return nil
 		},
-	})
+	}
 	acctest.TestPlugin(t, testCase)
 }
 
 func TestBuilderAcc_instanceSA(t *testing.T) {
 	testAccPreCheckInstanceSA(t)
 	testCase := &acctest.PluginTestCase{
-		Name:     "yandex_basic_test_instance_sa"
+		Name:     "yandex_basic_test_instance_sa",
 		Template: testBuilderAccInstanceSA,
 		Check: func(buildCommand *exec.Cmd, logfile string) error {
 			if buildCommand.ProcessState != nil {
@@ -42,7 +42,7 @@ func TestBuilderAcc_instanceSA(t *testing.T) {
 			}
 			return nil
 		},
-	})
+	}
 	acctest.TestPlugin(t, testCase)
 }
 
