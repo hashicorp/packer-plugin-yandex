@@ -7,25 +7,43 @@ import (
 
 	"github.com/go-resty/resty/v2"
 
-	builderT "github.com/hashicorp/packer/acctest"
+	builderT "github.com/hashicorp/packer-plugin-sdk/acctest"
 )
 
 const InstanceMetadataAddr = "169.254.169.254"
 
 func TestBuilderAcc_basic(t *testing.T) {
-	builderT.Test(t, builderT.TestCase{
-		PreCheck: func() { testAccPreCheck(t) },
-		Builder:  &Builder{},
-		Template: testBuilderAccBasic,
+	testAccPreCheck(t)
+	testCase := &acctest.PluginTestCase{
+		Name:     "yandex_basic_test",
+		Template: testBuilderAccBasic,		
+		Check: func(buildCommand *exec.Cmd, logfile string) error {
+			if buildCommand.ProcessState != nil {
+				if buildCommand.ProcessState.ExitCode() != 0 {
+					return fmt.Errorf("Bad exit code. Logfile: %s", logfile)
+				}
+			}
+			return nil
+		},
 	})
+	acctest.TestPlugin(t, testCase)
 }
 
 func TestBuilderAcc_instanceSA(t *testing.T) {
-	builderT.Test(t, builderT.TestCase{
-		PreCheck: func() { testAccPreCheckInstanceSA(t) },
-		Builder:  &Builder{},
+	testAccPreCheckInstanceSA(t)
+	testCase := &acctest.PluginTestCase{
+		Name:     "yandex_basic_test_instance_sa"
 		Template: testBuilderAccInstanceSA,
+		Check: func(buildCommand *exec.Cmd, logfile string) error {
+			if buildCommand.ProcessState != nil {
+				if buildCommand.ProcessState.ExitCode() != 0 {
+					return fmt.Errorf("Bad exit code. Logfile: %s", logfile)
+				}
+			}
+			return nil
+		},
 	})
+	acctest.TestPlugin(t, testCase)
 }
 
 func testAccPreCheck(t *testing.T) {
