@@ -10,7 +10,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/hashicorp/hcl/v2 v2.10.0
 	github.com/hashicorp/packer v1.7.2
-	github.com/hashicorp/packer-plugin-sdk v0.2.2
+	github.com/hashicorp/packer-plugin-sdk v0.2.3
 	github.com/stretchr/testify v1.7.0
 	github.com/yandex-cloud/go-genproto v0.0.0-20210419102011-ea71516bb3f7
 	github.com/yandex-cloud/go-sdk v0.0.0-20210413100926-1c3eb10c58d7
