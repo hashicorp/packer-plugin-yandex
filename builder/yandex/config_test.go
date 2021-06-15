@@ -261,7 +261,10 @@ func TestImageName(t *testing.T) {
 	raw := testConfig(t)
 
 	var c Config
-	c.Prepare(raw)
+
+	warns, errs := c.Prepare(raw)
+	testConfigOk(t, warns, errs)
+
 	if !strings.HasPrefix(c.ImageName, "packer-") {
 		t.Fatalf("ImageName should have 'packer-' prefix, found %s", c.ImageName)
 	}
@@ -274,7 +277,8 @@ func TestZone(t *testing.T) {
 	raw := testConfig(t)
 
 	var c Config
-	c.Prepare(raw)
+	warns, errs := c.Prepare(raw)
+	testConfigOk(t, warns, errs)
 	if c.Zone != "ru-central1-a" {
 		t.Fatalf("Zone should be 'ru-central1-a' given, but is '%s'", c.Zone)
 	}
@@ -285,7 +289,8 @@ func TestGpuDefaultPlatformID(t *testing.T) {
 	raw["instance_gpus"] = 1
 
 	var c Config
-	c.Prepare(raw)
+	warns, errs := c.Prepare(raw)
+	testConfigOk(t, warns, errs)
 	if c.PlatformID != "gpu-standard-v1" {
 		t.Fatalf("expected 'gpu-standard-v1' as default platform_id for instance with GPU(s), but got '%s'", c.PlatformID)
 	}
