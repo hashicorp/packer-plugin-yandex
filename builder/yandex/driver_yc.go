@@ -116,6 +116,7 @@ func (d *driverYC) GetImage(imageID string) (*Image, error) {
 		Labels:        image.Labels,
 		Licenses:      image.ProductIds,
 		Name:          image.Name,
+		Family:        image.Family,
 		Description:   image.Description,
 		FolderID:      image.FolderId,
 		MinDiskSizeGb: toGigabytes(image.MinDiskSize),
