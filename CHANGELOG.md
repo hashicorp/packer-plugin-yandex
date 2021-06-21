@@ -1,6 +1,7 @@
 ## 1.1.0 (Unreleased)
 
 * New option: `skip_create_image` [GH-11]
+* Provider image family data [GH-9]
 
 ## 1.0.0 (June 14, 2021)
 
