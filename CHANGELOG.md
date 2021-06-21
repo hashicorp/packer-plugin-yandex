@@ -1,3 +1,7 @@
+## 1.1.0 (Unreleased)
+
+* Provider image family data [GH-9]
+
 ## 1.0.0 (June 14, 2021)
 
 * Bump github.com/hashicorp/packer-plugin-sdk to 0.2.3 [GH-8]
