@@ -19,10 +19,16 @@ type stepCreateImage struct {
 }
 
 func (s *stepCreateImage) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
+	config := state.Get("config").(*Config)
 	sdk := state.Get("sdk").(*ycsdk.SDK)
 	ui := state.Get("ui").(packersdk.Ui)
 	c := state.Get("config").(*Config)
 	diskID := state.Get("disk_id").(string)
+
+	if config.SkipCreateImage {
+		ui.Say("Skipping image creation...")
+		return multistep.ActionContinue
+	}
 
 	ui.Say(fmt.Sprintf("Creating image: %v", c.ImageName))
 	ctx, cancel := context.WithTimeout(ctx, c.StateTimeout)
