@@ -14,9 +14,6 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 	yandexexport "github.com/hashicorp/packer-plugin-yandex/post-processor/yandex-export"
-	"github.com/hashicorp/packer/builder/file"
-	"github.com/hashicorp/packer/post-processor/artifice"
-	"github.com/hashicorp/packer/post-processor/compress"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/iam/v1/awscompatibility"
 )
 
@@ -130,7 +127,10 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 	}
 
 	switch artifact.BuilderId() {
-	case compress.BuilderId, artifice.BuilderId, file.BuilderId:
+	// TODO: this is to avoid a dep loop: uncomment when Packer core stops
+	// importing this plugin.
+	// case compress.BuilderId, artifice.BuilderId, file.BuilderId:
+	case "packer.post-processor.compress", "packer.post-processor.artifice", "packer.file":
 		// Artifact as a file, need to be uploaded to storage before create Compute Image
 		fileSource = true
 
