@@ -253,10 +253,16 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 			ServiceAccountID: p.config.ServiceAccountID,
 			Paths:            p.config.Paths,
 		},
-		&yandex.StepCreateSSHKey{
-			Debug:        p.config.PackerDebug,
-			DebugKeyPath: fmt.Sprintf("yc_export_pp_%s.pem", p.config.PackerBuildName),
+		&communicator.StepSSHKeyGen{
+			CommConf:            &yandexConfig.Communicator,
+			SSHTemporaryKeyPair: yandexConfig.Communicator.SSH.SSHTemporaryKeyPair,
 		},
+		multistep.If(p.config.PackerDebug && yandexConfig.Communicator.SSHPrivateKeyFile == "",
+			&communicator.StepDumpSSHKey{
+				Path: fmt.Sprintf("yc_export_pp_%s.pem", p.config.PackerBuildName),
+				SSH:  &yandexConfig.Communicator.SSH,
+			},
+		),
 		&yandex.StepCreateInstance{
 			Debug:         p.config.PackerDebug,
 			SerialLogFile: yandexConfig.SerialLogFile,
