@@ -72,6 +72,7 @@ func createYCImage(ctx context.Context, driver yandex.Driver, ui packersdk.Ui, i
 		Name:        c.ImageConfig.ImageName,
 		Description: c.ImageConfig.ImageDescription,
 		Labels:      c.ImageConfig.ImageLabels,
+		Pooled:      c.ImageConfig.ImagePooled,
 		Family:      c.ImageConfig.ImageFamily,
 		MinDiskSize: int64(c.ImageMinDiskSizeGb),
 		ProductIds:  c.ImageProductIDs,
