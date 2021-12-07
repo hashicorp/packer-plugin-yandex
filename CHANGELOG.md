@@ -1,4 +1,6 @@
-## 1.1.0 (Unreleased)
+Please see plugin [Releases](https://github.com/hashicorp/packer-plugin- yandex/releases) for the latest CHANGELOG information.
+
+## 1.0.2 (September 2, 2021)
 
 * New option: `skip_create_image` [GH-11]
 * Provider image family data [GH-9]
