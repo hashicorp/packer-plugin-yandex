@@ -33,6 +33,7 @@ func MergeCloudUserMetaData(usersData ...string) (string, error) {
 		return "", err
 	}
 
+	close := false
 	for i, userData := range usersData {
 		if len(userData) != 0 {
 			w, err := data.CreatePart(textproto.MIMEHeader{
@@ -46,8 +47,18 @@ func MergeCloudUserMetaData(usersData ...string) (string, error) {
 			if err != nil {
 				return "", err
 			}
+
+			close = true
 		}
 	}
+
+	if close {
+		err = data.Close()
+		if err != nil {
+			return "", err
+		}
+	}
+
 	return buff.String(), nil
 }
 
