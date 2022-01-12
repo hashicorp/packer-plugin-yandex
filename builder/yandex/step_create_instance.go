@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"strings"
 
 	"github.com/c2h5oh/datasize"
 	"github.com/hashicorp/packer-plugin-sdk/multistep"
@@ -218,8 +217,7 @@ func (s *StepCreateInstance) Run(ctx context.Context, state multistep.StateBag) 
 	if config.UseIPv6 {
 		ui.Say("Prepare user-data...")
 
-		osWindows := strings.Contains(strings.ToLower(sourceImage.Family), "windows")
-		if osWindows {
+		if sourceImage.Os.Type == compute.Os_WINDOWS {
 			ui.Say("Windows OS detected, no additional IPv6 configuration required")
 		} else {
 			oldUserData, ok := instanceMetadata["user-data"]

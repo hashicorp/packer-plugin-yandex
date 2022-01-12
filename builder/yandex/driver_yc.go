@@ -111,17 +111,7 @@ func (d *driverYC) GetImage(imageID string) (*Image, error) {
 		return nil, err
 	}
 
-	return &Image{
-		ID:            image.Id,
-		Labels:        image.Labels,
-		Licenses:      image.ProductIds,
-		Name:          image.Name,
-		Family:        image.Family,
-		Description:   image.Description,
-		FolderID:      image.FolderId,
-		MinDiskSizeGb: toGigabytes(image.MinDiskSize),
-		SizeGb:        toGigabytes(image.StorageSize),
-	}, nil
+	return convert(image), nil
 }
 
 func (d *driverYC) GetImageFromFolder(ctx context.Context, folderID string, family string) (*Image, error) {
@@ -133,17 +123,7 @@ func (d *driverYC) GetImageFromFolder(ctx context.Context, folderID string, fami
 		return nil, err
 	}
 
-	return &Image{
-		ID:            image.Id,
-		Labels:        image.Labels,
-		Licenses:      image.ProductIds,
-		Name:          image.Name,
-		Description:   image.Description,
-		FolderID:      image.FolderId,
-		Family:        image.Family,
-		MinDiskSizeGb: toGigabytes(image.MinDiskSize),
-		SizeGb:        toGigabytes(image.StorageSize),
-	}, nil
+	return convert(image), nil
 }
 
 func (d *driverYC) GetImageFromFolderByName(ctx context.Context, folderID string, imageName string) (*Image, error) {
