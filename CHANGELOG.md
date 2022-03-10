@@ -1,6 +1,7 @@
 ## 1.1.0 (Unreleased)
 
 * Provider image family data [GH-9]
+* Support set of Security Group IDs on the instance [GH-36]
 
 ## 1.0.0 (June 14, 2021)
 

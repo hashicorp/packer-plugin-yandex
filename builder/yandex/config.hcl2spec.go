@@ -88,6 +88,7 @@ type FlatConfig struct {
 	DiskLabels                map[string]string `mapstructure:"disk_labels" required:"false" cty:"disk_labels" hcl:"disk_labels"`
 	SubnetID                  *string           `mapstructure:"subnet_id" required:"false" cty:"subnet_id" hcl:"subnet_id"`
 	Zone                      *string           `mapstructure:"zone" required:"false" cty:"zone" hcl:"zone"`
+	SecurityGroupIds          []string          `mapstructure:"security_group_ids" required:"false" cty:"security_group_ids" hcl:"security_group_ids"`
 	UseIPv4Nat                *bool             `mapstructure:"use_ipv4_nat" required:"false" cty:"use_ipv4_nat" hcl:"use_ipv4_nat"`
 	UseIPv6                   *bool             `mapstructure:"use_ipv6" required:"false" cty:"use_ipv6" hcl:"use_ipv6"`
 	UseInternalIP             *bool             `mapstructure:"use_internal_ip" required:"false" cty:"use_internal_ip" hcl:"use_internal_ip"`
@@ -196,6 +197,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"disk_labels":                  &hcldec.AttrSpec{Name: "disk_labels", Type: cty.Map(cty.String), Required: false},
 		"subnet_id":                    &hcldec.AttrSpec{Name: "subnet_id", Type: cty.String, Required: false},
 		"zone":                         &hcldec.AttrSpec{Name: "zone", Type: cty.String, Required: false},
+		"security_group_ids":           &hcldec.AttrSpec{Name: "security_group_ids", Type: cty.List(cty.String), Required: false},
 		"use_ipv4_nat":                 &hcldec.AttrSpec{Name: "use_ipv4_nat", Type: cty.Bool, Required: false},
 		"use_ipv6":                     &hcldec.AttrSpec{Name: "use_ipv6", Type: cty.Bool, Required: false},
 		"use_internal_ip":              &hcldec.AttrSpec{Name: "use_internal_ip", Type: cty.Bool, Required: false},

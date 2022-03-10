@@ -109,6 +109,8 @@ type NetworkConfig struct {
 	SubnetID string `mapstructure:"subnet_id" required:"false"`
 	// The name of the zone to launch the instance.  This defaults to `ru-central1-a`.
 	Zone string `mapstructure:"zone" required:"false"`
+	// Security group ids for network interface of the instance.
+	SecurityGroupIds []string `mapstructure:"security_group_ids" required:"false"`
 
 	// If set to true, then launched instance will have external internet
 	// access.
