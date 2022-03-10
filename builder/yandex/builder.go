@@ -68,10 +68,16 @@ func (b *Builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 
 	// Build the steps
 	steps := []multistep.Step{
-		&StepCreateSSHKey{
-			Debug:        b.config.PackerDebug,
-			DebugKeyPath: fmt.Sprintf("yc_%s.pem", b.config.PackerBuildName),
+		&communicator.StepSSHKeyGen{
+			CommConf:            &b.config.Communicator,
+			SSHTemporaryKeyPair: b.config.Communicator.SSH.SSHTemporaryKeyPair,
 		},
+		multistep.If(b.config.PackerDebug && b.config.Communicator.SSHPrivateKeyFile == "",
+			&communicator.StepDumpSSHKey{
+				Path: fmt.Sprintf("yc_%s.pem", b.config.PackerBuildName),
+				SSH:  &b.config.Communicator.SSH,
+			},
+		),
 		&StepCreateInstance{
 			Debug:         b.config.PackerDebug,
 			SerialLogFile: b.config.SerialLogFile,

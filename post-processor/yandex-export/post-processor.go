@@ -23,8 +23,6 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/template/config"
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
-	"github.com/hashicorp/packer/builder/file"
-	"github.com/hashicorp/packer/post-processor/artifice"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/iam/v1"
 	ycsdk "github.com/yandex-cloud/go-sdk"
@@ -168,9 +166,13 @@ func (p *PostProcessor) Configure(raws ...interface{}) error {
 func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifact packersdk.Artifact) (packersdk.Artifact, bool, bool, error) {
 	imageID := ""
 	switch artifact.BuilderId() {
-	case yandex.BuilderID, artifice.BuilderId:
+	// TODO: uncomment when Packer core stops importing this plugin.
+	// case yandex.BuilderID, artifice.BuilderId:
+	case yandex.BuilderID, "packer.post-processor.artifice":
 		imageID = artifact.State("ImageID").(string)
-	case file.BuilderId:
+	// TODO: uncomment when Packer core stops importing this plugin.
+	// case file.BuilderId:
+	case "packer.file":
 		fileName := artifact.Files()[0]
 		if content, err := ioutil.ReadFile(fileName); err == nil {
 			imageID = strings.TrimSpace(string(content))
@@ -251,10 +253,16 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 			ServiceAccountID: p.config.ServiceAccountID,
 			Paths:            p.config.Paths,
 		},
-		&yandex.StepCreateSSHKey{
-			Debug:        p.config.PackerDebug,
-			DebugKeyPath: fmt.Sprintf("yc_export_pp_%s.pem", p.config.PackerBuildName),
+		&communicator.StepSSHKeyGen{
+			CommConf:            &yandexConfig.Communicator,
+			SSHTemporaryKeyPair: yandexConfig.Communicator.SSH.SSHTemporaryKeyPair,
 		},
+		multistep.If(p.config.PackerDebug && yandexConfig.Communicator.SSHPrivateKeyFile == "",
+			&communicator.StepDumpSSHKey{
+				Path: fmt.Sprintf("yc_export_pp_%s.pem", p.config.PackerBuildName),
+				SSH:  &yandexConfig.Communicator.SSH,
+			},
+		),
 		&yandex.StepCreateInstance{
 			Debug:         p.config.PackerDebug,
 			SerialLogFile: yandexConfig.SerialLogFile,

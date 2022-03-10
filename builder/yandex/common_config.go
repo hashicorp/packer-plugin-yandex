@@ -149,6 +149,10 @@ type ImageConfig struct {
 	ImageMinDiskSizeGb int `mapstructure:"image_min_disk_size_gb" required:"false"`
 	// License IDs that indicate which licenses are attached to resulting image.
 	ImageProductIDs []string `mapstructure:"image_product_ids" required:"false"`
+	// When true, an image pool will be created for fast creation disks from the image.
+	ImagePooled bool `mapstructure:"image_pooled" required:"false"`
+	// Skip creating the image. Useful for setting to `true` during a build test stage. Defaults to `false`.
+	SkipCreateImage bool `mapstructure:"skip_create_image" required:"false"`
 }
 
 func (c *ImageConfig) Prepare(errs *packersdk.MultiError) *packersdk.MultiError {

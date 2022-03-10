@@ -10,10 +10,10 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	packersdk "github.com/hashicorp/packer-plugin-sdk/packer"
 	"github.com/hashicorp/packer-plugin-sdk/useragent"
+	"github.com/hashicorp/packer-plugin-yandex/version"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 
-	"github.com/hashicorp/packer-plugin-yandex/builder/yandex/version"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/endpoint"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/vpc/v1"
@@ -84,7 +84,7 @@ func NewDriverYC(ui packersdk.Ui, ac *AccessConfig) (Driver, error) {
 	interceptorChain := grpc_middleware.ChainUnaryClient(retryInterceptor, requestIDInterceptor)
 
 	sdk, err := ycsdk.Build(context.Background(), sdkConfig,
-		grpc.WithUserAgent(useragent.String(version.YandexPluginVersion.FormattedVersion())),
+		grpc.WithUserAgent(useragent.String(version.PluginVersion.FormattedVersion())),
 		grpc.WithUnaryInterceptor(interceptorChain),
 	)
 
