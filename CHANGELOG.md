@@ -16,6 +16,7 @@ Please see plugin [Releases](https://github.com/hashicorp/packer-plugin-yandex/r
 
 * New option: `skip_create_image` [GH-11]
 * Provider image family data [GH-9]
+* Support set of Security Group IDs on the instance [GH-36]
 
 ## 1.0.0 (June 14, 2021)
 
