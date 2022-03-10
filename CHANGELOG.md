@@ -1,7 +1,16 @@
-Please see plugin [Releases](https://github.com/hashicorp/packer-plugin- yandex/releases) for the latest CHANGELOG information.
+Please see plugin [Releases](https://github.com/hashicorp/packer-plugin-yandex/releases) for the latest CHANGELOG information.
 
 ## 1.1.0 (Unreleased)
-* Support set of Security Group IDs on the instance [GH-36]
+
+* Support set of Security Group IDs on the instance #36
+
+## 1.0.3 (December 7, 2021)
+
+* Validate plugin from the packer-sdc plugin-validate command by @azr in #22
+* Feature generate ssh keys using packer sdk by @mrdracon in #25
+* Add image_pooled option by @mooncube in #26
+* add .github/releases.yml by @azr in #28
+* Update plugin dependencies by @nywilken in #30
 
 ## 1.0.2 (September 2, 2021)
 
