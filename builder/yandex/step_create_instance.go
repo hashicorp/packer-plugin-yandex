@@ -252,6 +252,7 @@ func (s *StepCreateInstance) Run(ctx context.Context, state multistep.StateBag) 
 			{
 				SubnetId:             instanceSubnetID,
 				PrimaryV4AddressSpec: &compute.PrimaryAddressSpec{},
+				SecurityGroupIds:     config.SecurityGroupIds,
 			},
 		},
 	}
