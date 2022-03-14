@@ -1,6 +1,6 @@
 Please see plugin [Releases](https://github.com/hashicorp/packer-plugin-yandex/releases) for the latest CHANGELOG information.
 
-## 1.1.0 (Unreleased)
+## 1.1.0 (March 14, 2022)
 
 * Support set of Security Group IDs on the instance #36
 
