@@ -21,14 +21,15 @@ type StepUploadToS3 struct {
 func (s *StepUploadToS3) Run(ctx context.Context, state multistep.StateBag) multistep.StepAction {
 	ui := state.Get("ui").(packersdk.Ui)
 	comm := state.Get("communicator").(packersdk.Communicator)
+	storageParams := state.Get("storageParams").(*storageParameters)
 
 	cmdUploadToS3 := &packersdk.RemoteCmd{
 		Command: fmt.Sprintf(
 			"%s=%s aws s3 --region=%s --endpoint-url=https://%s cp disk.qcow2 %s",
 			"AWS_SHARED_CREDENTIALS_FILE",
 			sharedAWSCredFile,
-			defaultStorageRegion,
-			defaultStorageEndpoint,
+			storageParams.storageRegion,
+			storageParams.storageEndpoint,
 			s.Paths[0],
 		),
 	}
@@ -58,8 +59,8 @@ func (s *StepUploadToS3) Run(ctx context.Context, state multistep.StateBag) mult
 					"%s=%s aws s3 --region=%s --endpoint-url=https://%s cp %s %s %s",
 					"AWS_SHARED_CREDENTIALS_FILE",
 					sharedAWSCredFile,
-					defaultStorageRegion,
-					defaultStorageEndpoint,
+					storageParams.storageRegion,
+					storageParams.storageEndpoint,
 					versionExtraFlags,
 					s.Paths[0],
 					path,

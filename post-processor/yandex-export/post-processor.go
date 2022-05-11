@@ -65,7 +65,18 @@ type Config struct {
 	// > **Careful!** Increases payment cost.
 	// > See [perfomance](https://cloud.yandex.com/docs/compute/concepts/disk#performance).
 	SourceDiskExtraSize int `mapstructure:"source_disk_extra_size" required:"false"`
-	ctx                 interpolate.Context
+
+	// StorageEndpoint custom Yandex Object Storage endpoint to upload image, Default `storage.yandexcloud.net`.
+	StorageEndpoint string `mapstructure:"storage_endpoint" required:"false"`
+	// StorageRegion custom Yandex Object region. Default `ru-central1`
+	StorageRegion string `mapstructure:"storage_region" required:"false"`
+
+	ctx interpolate.Context
+}
+
+type storageParameters struct {
+	storageEndpoint string
+	storageRegion   string
 }
 
 type PostProcessor struct {
@@ -140,14 +151,23 @@ func (p *PostProcessor) Configure(raws ...interface{}) error {
 		return errs
 	}
 
+	if p.config.StorageEndpoint == "" {
+		p.config.StorageEndpoint = defaultStorageEndpoint
+	}
+
+	if p.config.StorageRegion == "" {
+		p.config.StorageRegion = defaultStorageRegion
+	}
+
 	// Due to the fact that now it's impossible to go to the object storage
 	// through the internal network - we need access
 	// to the global Internet: either through ipv4 or ipv6
 	// TODO: delete this when access appears
-	if p.config.UseIPv4Nat == false && p.config.UseIPv6 == false {
+	if !p.config.UseIPv4Nat && !p.config.UseIPv6 && p.config.StorageEndpoint == defaultStorageEndpoint {
 		log.Printf("[DEBUG] Force use IPv4")
 		p.config.UseIPv4Nat = true
 	}
+
 	p.config.Preemptible = true //? safety
 
 	if p.config.Labels == nil {
@@ -217,6 +237,7 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 	if err != nil {
 		return nil, false, false, err
 	}
+
 	imageDescription, err := driver.SDK().Compute().Image().Get(ctx, &compute.GetImageRequest{
 		ImageId: imageID,
 	})
@@ -240,12 +261,18 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 		return nil, false, false, err
 	}
 
+	storageParameters := &storageParameters{
+		storageEndpoint: p.config.StorageEndpoint,
+		storageRegion:   p.config.StorageRegion,
+	}
+
 	// Set up the state.
 	state := new(multistep.BasicStateBag)
 	state.Put("config", &yandexConfig)
 	state.Put("driver", driver)
 	state.Put("sdk", driver.SDK())
 	state.Put("ui", ui)
+	state.Put("storageParams", storageParameters)
 
 	// Build the steps.
 	steps := []multistep.Step{

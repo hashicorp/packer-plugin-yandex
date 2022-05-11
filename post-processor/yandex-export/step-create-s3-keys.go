@@ -40,13 +40,17 @@ func (c *StepCreateS3Keys) Run(ctx context.Context, state multistep.StateBag) mu
 	state.Put("s3_secret", respWithKey)
 
 	ui.Say("Verify access to paths")
-	if err := verfiyAccess(respWithKey.GetAccessKey().GetKeyId(), respWithKey.Secret, c.Paths); err != nil {
+
+	storageParams := state.Get("storageParams").(*storageParameters)
+
+	if err := verifyAccess(storageParams, respWithKey.GetAccessKey().GetKeyId(), respWithKey.Secret, c.Paths); err != nil {
 		return yandex.StepHaltWithError(state, err)
 	}
+
 	return multistep.ActionContinue
 }
 
-func (s *StepCreateS3Keys) Cleanup(state multistep.StateBag) {
+func (c *StepCreateS3Keys) Cleanup(state multistep.StateBag) {
 	driver := state.Get("driver").(yandex.Driver)
 	ui := state.Get("ui").(packersdk.Ui)
 
@@ -54,8 +58,10 @@ func (s *StepCreateS3Keys) Cleanup(state multistep.StateBag) {
 		ui.Say("S3 secrets have been found")
 		s3Secret := val.(*awscompatibility.CreateAccessKeyResponse)
 
+		storageParams := state.Get("storageParams").(*storageParameters)
+
 		ui.Message("Cleanup empty objects...")
-		cleanUpEmptyObjects(s3Secret.GetAccessKey().GetKeyId(), s3Secret.GetSecret(), s.Paths)
+		cleanUpEmptyObjects(storageParams, s3Secret.GetAccessKey().GetKeyId(), s3Secret.GetSecret(), c.Paths)
 
 		ui.Say("Delete S3 secrets...")
 		_, err := driver.SDK().IAM().AWSCompatibility().AccessKey().Delete(context.Background(), &awscompatibility.DeleteAccessKeyRequest{
@@ -68,10 +74,10 @@ func (s *StepCreateS3Keys) Cleanup(state multistep.StateBag) {
 	}
 }
 
-func verfiyAccess(keyID, secret string, paths []string) error {
+func verifyAccess(storageParams *storageParameters, keyID, secret string, paths []string) error {
 	newSession, err := session.NewSession(&aws.Config{
-		Endpoint: aws.String(defaultStorageEndpoint),
-		Region:   aws.String(defaultStorageRegion),
+		Endpoint: aws.String(storageParams.storageEndpoint),
+		Region:   aws.String(storageParams.storageRegion),
 		Credentials: credentials.NewStaticCredentials(
 			keyID, secret, "",
 		),
@@ -104,10 +110,10 @@ func verfiyAccess(keyID, secret string, paths []string) error {
 	return nil
 }
 
-func cleanUpEmptyObjects(keyID, secret string, paths []string) {
+func cleanUpEmptyObjects(storageParams *storageParameters, keyID, secret string, paths []string) {
 	newSession, err := session.NewSession(&aws.Config{
-		Endpoint: aws.String(defaultStorageEndpoint),
-		Region:   aws.String(defaultStorageRegion),
+		Endpoint: aws.String(storageParams.storageEndpoint),
+		Region:   aws.String(storageParams.storageRegion),
 		Credentials: credentials.NewStaticCredentials(
 			keyID, secret, "",
 		),
