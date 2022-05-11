@@ -167,7 +167,8 @@ func (p *PostProcessor) Configure(raws ...interface{}) error {
 	// through the internal network - we need access
 	// to the global Internet: either through ipv4 or ipv6
 	// TODO: delete this when access appears
-	if !p.config.UseIPv4Nat && !p.config.UseIPv6 && p.config.StorageEndpoint == defaultStorageEndpoint {
+	if !p.config.UseIPv4Nat && !p.config.UseIPv6 &&
+		!p.config.StorageEndpointAutoresolve && p.config.StorageEndpoint == defaultStorageEndpoint {
 		log.Printf("[DEBUG] Force use IPv4")
 		p.config.UseIPv4Nat = true
 	}
