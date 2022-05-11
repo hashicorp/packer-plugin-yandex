@@ -278,7 +278,7 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 		p.config.StorageEndpoint = response.Address
 	}
 
-	log.Printf("using storage endpoint: '%s'", p.config.StorageEndpoint)
+	log.Printf("[DEBUG] Using storage endpoint: '%s'", p.config.StorageEndpoint)
 
 	storageParameters := &storageParameters{
 		storageEndpoint: p.config.StorageEndpoint,
