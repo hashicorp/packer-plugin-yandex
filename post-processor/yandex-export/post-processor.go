@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
+	"github.com/yandex-cloud/go-genproto/yandex/cloud/endpoint"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/iam/v1"
 	ycsdk "github.com/yandex-cloud/go-sdk"
 )
@@ -68,6 +69,9 @@ type Config struct {
 
 	// StorageEndpoint custom Yandex Object Storage endpoint to upload image, Default `storage.yandexcloud.net`.
 	StorageEndpoint string `mapstructure:"storage_endpoint" required:"false"`
+	// StorageEndpointAutoresolve auto resolve storage endpoint via YC Public API ListEndpoints call. Option has
+	// precedence over 'storage_endpoint' option.
+	StorageEndpointAutoresolve bool `mapstructure:"storage_endpoint_autoresolve" required:"false"`
 	// StorageRegion custom Yandex Object region. Default `ru-central1`
 	StorageRegion string `mapstructure:"storage_region" required:"false"`
 
@@ -260,6 +264,21 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 	if err := validateServiceAccount(ctx, driver.SDK(), yandexConfig.ServiceAccountID); err != nil {
 		return nil, false, false, err
 	}
+
+	if p.config.StorageEndpointAutoresolve {
+		ui.Say("Resolving storage endpoint...")
+		response, err := driver.SDK().ApiEndpoint().ApiEndpoint().Get(ctx, &endpoint.GetApiEndpointRequest{
+			ApiEndpointId: "storage",
+		})
+
+		if err != nil {
+			return nil, false, false, err
+		}
+
+		p.config.StorageEndpoint = response.Address
+	}
+
+	log.Printf("using storage endpoint: '%s'", p.config.StorageEndpoint)
 
 	storageParameters := &storageParameters{
 		storageEndpoint: p.config.StorageEndpoint,
