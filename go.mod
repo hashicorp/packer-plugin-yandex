@@ -9,7 +9,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/hashicorp/hcl/v2 v2.12.0
-	github.com/hashicorp/packer-plugin-sdk v0.2.12
+	github.com/hashicorp/packer-plugin-sdk v0.2.13
 	github.com/stretchr/testify v1.7.0
 	github.com/yandex-cloud/go-genproto v0.0.0-20211202135052-789603780fb2
 	github.com/yandex-cloud/go-sdk v0.0.0-20211206101223-7c4e7926bf53
@@ -86,7 +86,7 @@ require (
 	golang.org/x/crypto v0.0.0-20220427172511-eb4f295cb31f // indirect
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1 // indirect
-	golang.org/x/sys v0.0.0-20210917161153-d61c044b1678 // indirect
+	golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 // indirect
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
