@@ -217,13 +217,17 @@ func (s *StepCreateInstance) Run(ctx context.Context, state multistep.StateBag) 
 	if config.UseIPv6 {
 		ui.Say("Prepare user-data...")
 
-		oldUserData, ok := instanceMetadata["user-data"]
-		if !ok {
-			oldUserData = ""
-		}
-		instanceMetadata["user-data"], err = MergeCloudUserMetaData(cloudInitIPv6Config, oldUserData)
-		if err != nil {
-			return StepHaltWithError(state, fmt.Errorf("Error merge user data configs: %s", err))
+		if sourceImage.Os.Type == compute.Os_WINDOWS {
+			ui.Say("Windows OS detected, no additional IPv6 configuration required")
+		} else {
+			oldUserData, ok := instanceMetadata["user-data"]
+			if !ok {
+				oldUserData = ""
+			}
+			instanceMetadata["user-data"], err = MergeCloudUserMetaData(cloudInitIPv6Config, oldUserData)
+			if err != nil {
+				return StepHaltWithError(state, fmt.Errorf("Error merge user data configs: %s", err))
+			}
 		}
 	}
 
