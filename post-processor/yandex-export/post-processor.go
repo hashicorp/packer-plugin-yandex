@@ -24,6 +24,7 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/compute/v1"
+	"github.com/yandex-cloud/go-genproto/yandex/cloud/endpoint"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/iam/v1"
 	ycsdk "github.com/yandex-cloud/go-sdk"
 )
@@ -65,7 +66,21 @@ type Config struct {
 	// > **Careful!** Increases payment cost.
 	// > See [perfomance](https://cloud.yandex.com/docs/compute/concepts/disk#performance).
 	SourceDiskExtraSize int `mapstructure:"source_disk_extra_size" required:"false"`
-	ctx                 interpolate.Context
+
+	// StorageEndpoint custom Yandex Object Storage endpoint to upload image, Default `storage.yandexcloud.net`.
+	StorageEndpoint string `mapstructure:"storage_endpoint" required:"false"`
+	// StorageEndpointAutoresolve auto resolve storage endpoint via YC Public API ListEndpoints call. Option has
+	// precedence over 'storage_endpoint' option.
+	StorageEndpointAutoresolve bool `mapstructure:"storage_endpoint_autoresolve" required:"false"`
+	// StorageRegion custom Yandex Object region. Default `ru-central1`
+	StorageRegion string `mapstructure:"storage_region" required:"false"`
+
+	ctx interpolate.Context
+}
+
+type storageParameters struct {
+	storageEndpoint string
+	storageRegion   string
 }
 
 type PostProcessor struct {
@@ -140,14 +155,24 @@ func (p *PostProcessor) Configure(raws ...interface{}) error {
 		return errs
 	}
 
+	if p.config.StorageEndpoint == "" {
+		p.config.StorageEndpoint = defaultStorageEndpoint
+	}
+
+	if p.config.StorageRegion == "" {
+		p.config.StorageRegion = defaultStorageRegion
+	}
+
 	// Due to the fact that now it's impossible to go to the object storage
 	// through the internal network - we need access
 	// to the global Internet: either through ipv4 or ipv6
 	// TODO: delete this when access appears
-	if p.config.UseIPv4Nat == false && p.config.UseIPv6 == false {
+	if !p.config.UseIPv4Nat && !p.config.UseIPv6 &&
+		!p.config.StorageEndpointAutoresolve && p.config.StorageEndpoint == defaultStorageEndpoint {
 		log.Printf("[DEBUG] Force use IPv4")
 		p.config.UseIPv4Nat = true
 	}
+
 	p.config.Preemptible = true //? safety
 
 	if p.config.Labels == nil {
@@ -217,6 +242,7 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 	if err != nil {
 		return nil, false, false, err
 	}
+
 	imageDescription, err := driver.SDK().Compute().Image().Get(ctx, &compute.GetImageRequest{
 		ImageId: imageID,
 	})
@@ -240,12 +266,33 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 		return nil, false, false, err
 	}
 
+	if p.config.StorageEndpointAutoresolve {
+		ui.Say("Resolving storage endpoint...")
+		response, err := driver.SDK().ApiEndpoint().ApiEndpoint().Get(ctx, &endpoint.GetApiEndpointRequest{
+			ApiEndpointId: "storage",
+		})
+
+		if err != nil {
+			return nil, false, false, err
+		}
+
+		p.config.StorageEndpoint = response.Address
+	}
+
+	log.Printf("[DEBUG] Using storage endpoint: '%s'", p.config.StorageEndpoint)
+
+	storageParameters := &storageParameters{
+		storageEndpoint: p.config.StorageEndpoint,
+		storageRegion:   p.config.StorageRegion,
+	}
+
 	// Set up the state.
 	state := new(multistep.BasicStateBag)
 	state.Put("config", &yandexConfig)
 	state.Put("driver", driver)
 	state.Put("sdk", driver.SDK())
 	state.Put("ui", ui)
+	state.Put("storageParams", storageParameters)
 
 	// Build the steps.
 	steps := []multistep.Step{
