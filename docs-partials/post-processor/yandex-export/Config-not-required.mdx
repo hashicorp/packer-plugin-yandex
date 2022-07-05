@@ -16,4 +16,11 @@
   > **Careful!** Increases payment cost.
   > See [perfomance](https://cloud.yandex.com/docs/compute/concepts/disk#performance).
 
+- `storage_endpoint` (string) - StorageEndpoint custom Yandex Object Storage endpoint to upload image, Default `storage.yandexcloud.net`.
+
+- `storage_endpoint_autoresolve` (bool) - StorageEndpointAutoresolve auto resolve storage endpoint via YC Public API ListEndpoints call. Option has
+  precedence over 'storage_endpoint' option.
+
+- `storage_region` (string) - StorageRegion custom Yandex Object region. Default `ru-central1`
+
 <!-- End of code generated from the comments of the Config struct in post-processor/yandex-export/post-processor.go; -->
