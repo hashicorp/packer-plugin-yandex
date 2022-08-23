@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/yandex-cloud/go-genproto v0.0.0-20211202135052-789603780fb2
 	github.com/yandex-cloud/go-sdk v0.0.0-20211206101223-7c4e7926bf53
-	github.com/zclconf/go-cty v1.10.0
+	github.com/zclconf/go-cty v1.11.0
 	google.golang.org/grpc v1.41.0
 )
 
