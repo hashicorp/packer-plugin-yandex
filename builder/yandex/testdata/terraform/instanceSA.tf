@@ -1,3 +1,6 @@
+# Copyright (c) HashiCorp, Inc.
+# SPDX-License-Identifier: MPL-2.0
+
 // This terraform code allows you to quickly create an instance with the assigned service account and the necessary rights.
 // To start, it is required to specify two parameters: oauth token and folder id.
 //
