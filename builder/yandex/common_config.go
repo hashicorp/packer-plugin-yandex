@@ -194,6 +194,8 @@ func (c *ImageConfig) Prepare(errs *packersdk.MultiError) *packersdk.MultiError 
 type InstanceConfig struct {
 	// The number of cores available to the instance.
 	InstanceCores int `mapstructure:"instance_cores" required:"false"`
+	// The vCPU performance level (core fraction) of the instance
+	InstanceCoreFraction int `mapstructure:"instance_core_fraction" required:"false"`
 	// The number of GPU available to the instance.
 	InstanceGpus int `mapstructure:"instance_gpus" required:"false"`
 	// The amount of memory available to the instance, specified in gigabytes.
@@ -216,6 +218,10 @@ type InstanceConfig struct {
 func (c *InstanceConfig) Prepare(errs *packersdk.MultiError) *packersdk.MultiError {
 	if c.InstanceCores == 0 {
 		c.InstanceCores = 2
+	}
+
+	if c.InstanceCoreFraction == 0 {
+		c.InstanceCoreFraction = 100
 	}
 
 	if c.InstanceMemory == 0 {
