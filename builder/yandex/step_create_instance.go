@@ -244,9 +244,10 @@ func (s *StepCreateInstance) Run(ctx context.Context, state multistep.StateBag) 
 			Preemptible: config.Preemptible,
 		},
 		ResourcesSpec: &compute.ResourcesSpec{
-			Memory: toBytes(config.InstanceMemory),
-			Cores:  int64(config.InstanceCores),
-			Gpus:   int64(config.InstanceGpus),
+			Memory:       toBytes(config.InstanceMemory),
+			Cores:        int64(config.InstanceCores),
+			CoreFraction: int64(config.InstanceCoreFraction),
+			Gpus:         int64(config.InstanceGpus),
 		},
 		Metadata: instanceMetadata,
 		BootDiskSpec: &compute.AttachedDiskSpec{
