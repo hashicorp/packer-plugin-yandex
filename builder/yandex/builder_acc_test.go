@@ -32,6 +32,23 @@ func TestBuilderAcc_basic(t *testing.T) {
 	acctest.TestPlugin(t, testCase)
 }
 
+func TestBuilderAcc_coreFraction(t *testing.T) {
+	testAccPreCheck(t)
+	testCase := &acctest.PluginTestCase{
+		Name:     "yandex_basic_test",
+		Template: testBuilderAccCoreFraction,
+		Check: func(buildCommand *exec.Cmd, logfile string) error {
+			if buildCommand.ProcessState != nil {
+				if buildCommand.ProcessState.ExitCode() != 0 {
+					return fmt.Errorf("Bad exit code. Logfile: %s", logfile)
+				}
+			}
+			return nil
+		},
+	}
+	acctest.TestPlugin(t, testCase)
+}
+
 func TestBuilderAcc_instanceSA(t *testing.T) {
 	testAccPreCheckInstanceSA(t)
 	testCase := &acctest.PluginTestCase{
@@ -75,8 +92,20 @@ func testAccPreCheckInstanceSA(t *testing.T) {
 const testBuilderAccBasic = `
 {
 	"builders": [{
-		"type": "test",
-        "source_image_family": "ubuntu-1804-lts",
+		"type": "yandex",
+        "source_image_family": "ubuntu-2204-lts",
+		"use_ipv4_nat": "true",
+		"ssh_username": "ubuntu"
+	}]
+}
+`
+
+const testBuilderAccCoreFraction = `
+{
+	"builders": [{
+		"type": "yandex",
+        "source_image_family": "ubuntu-2204-lts",
+        "instance_core_fraction": 50,
 		"use_ipv4_nat": "true",
 		"ssh_username": "ubuntu"
 	}]
@@ -86,8 +115,8 @@ const testBuilderAccBasic = `
 const testBuilderAccInstanceSA = `
 {
 	"builders": [{
-		"type": "test",
-        "source_image_family": "ubuntu-1804-lts",
+		"type": "yandex",
+        "source_image_family": "ubuntu-2204-lts",
 		"use_ipv4_nat": "true",
 		"ssh_username": "ubuntu"
 	}]
