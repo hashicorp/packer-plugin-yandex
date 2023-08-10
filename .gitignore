@@ -3,3 +3,4 @@ dist/*
 packer-plugin-scaffolding
 .docs
 crash.log
+.idea
