@@ -251,7 +251,7 @@ func (c *InstanceConfig) Prepare(errs *packersdk.MultiError) *packersdk.MultiErr
 type SourceImageConfig struct {
 	// The source image family to create the new image
 	// from. You can also specify source_image_id instead. Just one of a source_image_id or
-	// source_image_family must be specified. Example: `ubuntu-1804-lts`.
+	// source_image_family must be specified. Example: `ubuntu-2204-lts`.
 	SourceImageFamily string `mapstructure:"source_image_family" required:"true"`
 	// The ID of the folder containing the source image.
 	SourceImageFolderID string `mapstructure:"source_image_folder_id" required:"false"`
