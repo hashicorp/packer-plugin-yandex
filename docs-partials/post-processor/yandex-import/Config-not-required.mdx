@@ -14,4 +14,11 @@
   after the import process has completed. Possible values are: `true` to
   leave it in the bucket, `false` to remove it. Default is `false`.
 
+- `storage_endpoint` (string) - StorageEndpoint custom Yandex Object Storage endpoint to upload image, Default `storage.yandexcloud.net`.
+
+- `storage_endpoint_autoresolve` (bool) - StorageEndpointAutoresolve auto resolve storage endpoint via YC Public API ListEndpoints call. Option has
+  precedence over 'storage_endpoint' option.
+
+- `storage_region` (string) - StorageRegion custom Yandex Object region. Default `ru-central1`
+
 <!-- End of code generated from the comments of the Config struct in post-processor/yandex-import/post-processor.go; -->
