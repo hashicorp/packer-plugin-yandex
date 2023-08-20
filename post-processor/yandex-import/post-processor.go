@@ -9,6 +9,7 @@ package yandeximport
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/common"
@@ -17,7 +18,13 @@ import (
 	"github.com/hashicorp/packer-plugin-sdk/template/interpolate"
 	"github.com/hashicorp/packer-plugin-yandex/builder/yandex"
 	yandexexport "github.com/hashicorp/packer-plugin-yandex/post-processor/yandex-export"
+	"github.com/yandex-cloud/go-genproto/yandex/cloud/endpoint"
 	"github.com/yandex-cloud/go-genproto/yandex/cloud/iam/v1/awscompatibility"
+)
+
+const (
+	defaultStorageEndpoint = "storage.yandexcloud.net"
+	defaultStorageRegion   = "ru-central1"
 )
 
 type Config struct {
@@ -41,6 +48,14 @@ type Config struct {
 	// after the import process has completed. Possible values are: `true` to
 	// leave it in the bucket, `false` to remove it. Default is `false`.
 	SkipClean bool `mapstructure:"skip_clean" required:"false"`
+
+	// StorageEndpoint custom Yandex Object Storage endpoint to upload image, Default `storage.yandexcloud.net`.
+	StorageEndpoint string `mapstructure:"storage_endpoint" required:"false"`
+	// StorageEndpointAutoresolve auto resolve storage endpoint via YC Public API ListEndpoints call. Option has
+	// precedence over 'storage_endpoint' option.
+	StorageEndpointAutoresolve bool `mapstructure:"storage_endpoint_autoresolve" required:"false"`
+	// StorageRegion custom Yandex Object region. Default `ru-central1`
+	StorageRegion string `mapstructure:"storage_region" required:"false"`
 
 	ctx interpolate.Context
 }
@@ -124,7 +139,30 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 		return nil, false, false, err
 	}
 
-	storageClient, err := newYCStorageClient("", respWithKey.GetAccessKey().GetKeyId(), respWithKey.GetSecret())
+	if p.config.StorageEndpoint == "" {
+		p.config.StorageEndpoint = defaultStorageEndpoint
+	}
+
+	if p.config.StorageRegion == "" {
+		p.config.StorageRegion = defaultStorageRegion
+	}
+
+	if p.config.StorageEndpointAutoresolve {
+		ui.Say("Resolving storage endpoint...")
+		response, err := client.SDK().ApiEndpoint().ApiEndpoint().Get(ctx, &endpoint.GetApiEndpointRequest{
+			ApiEndpointId: "storage",
+		})
+
+		if err != nil {
+			return nil, false, false, err
+		}
+
+		p.config.StorageEndpoint = response.Address
+	}
+
+	log.Printf("[DEBUG] Using storage endpoint: '%s'", p.config.StorageEndpoint)
+
+	storageClient, err := newYCStorageClient(p.config.StorageEndpoint, respWithKey.GetAccessKey().GetKeyId(), respWithKey.GetSecret())
 	if err != nil {
 		return nil, false, false, fmt.Errorf("error create object storage client: %s", err)
 	}
