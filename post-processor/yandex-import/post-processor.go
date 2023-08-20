@@ -133,8 +133,8 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 	// TODO: this is to avoid a dep loop: uncomment when Packer core stops
 	// importing this plugin.
 	// case compress.BuilderId, artifice.BuilderId, file.BuilderId:
-	case "packer.post-processor.compress", "packer.post-processor.artifice", "packer.file":
-		// Artifact as a file, need to be uploaded to storage before create Compute Image
+	case "packer.post-processor.compress", "packer.post-processor.artifice", "packer.file", "transcend.qemu":
+		// Artifact as a file, needs to be uploaded to storage before Compute Image could be created
 		fileSource = true
 
 		// As `bucket` option validate input here
@@ -168,7 +168,7 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 
 	default:
 		err := fmt.Errorf(
-			"Unknown artifact type: %s\nCan only import from Yandex-Export, Yandex-Import, Compress, Artifice and File post-processor artifacts.",
+			"Unknown artifact type: %s\nCan only import from Yandex-Export, Yandex-Import, Compress, Artifice, File and Qemu post-processor artifacts.",
 			artifact.BuilderId())
 		return nil, false, false, err
 	}
