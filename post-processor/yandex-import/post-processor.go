@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/hashicorp/hcl/v2/hcldec"
 	"github.com/hashicorp/packer-plugin-sdk/common"
@@ -156,8 +157,11 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 		if err != nil {
 			return nil, false, false, err
 		}
-
-		p.config.StorageEndpoint = response.Address
+		// The API request returns a string potentially containing colon followed by a port number.
+		// This causes confusion later at Compute API call, which does not understand URI with port specification.
+		// While clearly a bug on Compute side, this is the only workaround we have to be able to operate if
+		// the url is resolved automatically.
+		p.config.StorageEndpoint, _, _ = strings.Cut(response.Address, ":")
 	}
 
 	log.Printf("[DEBUG] Using storage endpoint: '%s'", p.config.StorageEndpoint)
