@@ -23,12 +23,11 @@ packer plugins install github.com/hashicorp/yandex
 ### Components
 #### Builders
 
-- [yandex](/docs/builders/builder-name.mdx) - The builder is able to create images for use with Yandex Compute Cloud based on existing images.
+- [yandex](/packer/integrations/hashicorp/yandex/latest/components/builder/yandex) - The builder is able to create images for use with Yandex Compute Cloud based on existing images.
 
 ### Post-processors
 
-- [yandex-export](/packer/integration/hashicorp/yandex/latest/components/post-processor/yandex-export) - The export post-processor exports the resultant image from a Yandex 
+- [yandex-export](/packer/integrations/hashicorp/yandex/latest/components/post-processor/yandex-export) - The export post-processor exports the resultant image from a Yandex 
   build as a qcow2 file to Yandex Object Storage.
-- [yandex-import](/packer/integration/hashicorp/yandex/latest/components/post-processor/yandex-import) - The Import post-processor create new Compute Image from a qcow2 file.
-
+- [yandex-import](/packer/integrations/hashicorp/yandex/latest/components/post-processor/yandex-import) - The Import post-processor create new Compute Image from a qcow2 file.
 
