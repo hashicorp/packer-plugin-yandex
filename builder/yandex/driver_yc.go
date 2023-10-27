@@ -5,6 +5,7 @@ package yandex
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"strings"
@@ -60,8 +61,7 @@ func NewDriverYC(ui packersdk.Ui, ac *AccessConfig) (Driver, error) {
 			sdkConfig.Credentials = ycsdk.OAuthToken(ac.Token)
 		}
 	case ac.ServiceAccountKeyFile != "":
-		log.Printf("[INFO] Use Service Account key file %q for authentication", ac.ServiceAccountKeyFile)
-		key, err := iamkey.ReadFromJSONFile(ac.ServiceAccountKeyFile)
+		key, err := iamKeyFromSAKey(ac)
 		if err != nil {
 			return nil, err
 		}
@@ -104,6 +104,21 @@ func NewDriverYC(ui packersdk.Ui, ac *AccessConfig) (Driver, error) {
 		ui:  ui,
 	}, nil
 
+}
+
+func iamKeyFromSAKey(ac *AccessConfig) (*iamkey.Key, error) {
+	switch ac.saKeyType {
+	case File:
+		log.Printf("[INFO] Use Service Account key (file %q) for authentication", ac.ServiceAccountKeyFile)
+		return iamkey.ReadFromJSONFile(ac.ServiceAccountKeyFile)
+	case Content:
+		log.Printf("[INFO] Use Service Account key (as raw JSON) for authentication")
+		return iamkey.ReadFromJSONBytes([]byte(ac.ServiceAccountKeyFile))
+	case Undefined:
+		return nil, errors.New("`undefined` SA key type - something goes wrong")
+	default:
+		return nil, errors.New("failed to determine SA key type; perhaps skipped the preparation stage")
+	}
 }
 
 func (d *driverYC) GetImage(imageID string) (*Image, error) {

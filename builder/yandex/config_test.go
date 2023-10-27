@@ -4,7 +4,6 @@
 package yandex
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -15,8 +14,13 @@ import (
 const TestServiceAccountKeyFile = "./testdata/fake-sa-key.json"
 
 func TestConfigPrepare(t *testing.T) {
-	tf, err := ioutil.TempFile("", "packer")
+	tf, err := os.CreateTemp("", "packer")
 	require.NoError(t, err, "create temporary file failed")
+
+	bytes, err := os.ReadFile(TestServiceAccountKeyFile)
+	require.NoErrorf(t, err, "failed to read file %s", TestServiceAccountKeyFile)
+
+	var TestServiceAccountKeyFileContent = string(bytes)
 
 	defer os.Remove(tf.Name())
 	tf.Close()
@@ -45,6 +49,11 @@ func TestConfigPrepare(t *testing.T) {
 		{
 			"service_account_key_file",
 			TestServiceAccountKeyFile,
+			false,
+		},
+		{
+			"service_account_key_file",
+			TestServiceAccountKeyFileContent,
 			false,
 		},
 

@@ -53,9 +53,9 @@ file.
 
 - `endpoint` (string) - Non standard API endpoint. Default is `api.cloud.yandex.net:443`.
 
-- `service_account_key_file` (string) - Path to file with Service Account key in json format. This
-  is an alternative method to authenticate to Yandex.Cloud. Alternatively you may set environment variable
-  `YC_SERVICE_ACCOUNT_KEY_FILE`.
+- `service_account_key_file` (string) - Contains either a path to or the contents of the Service Account file in JSON format.
+  This can also be specified using environment variable `YC_SERVICE_ACCOUNT_KEY_FILE`.
+  You can read how to create service account key file [here](https://cloud.yandex.com/docs/iam/operations/iam-token/create-for-sa#keys-create).
 
 - `max_retries` (int) - The maximum number of times an API request is being executed.
 
