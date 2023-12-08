@@ -113,9 +113,9 @@ func (b *Builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 		return nil, rawErr.(error)
 	}
 
-	image, ok := state.GetOk("image")
-	if !ok {
-		return nil, fmt.Errorf("Failed to find 'image' in state. Bug?")
+	// If there are no images, then just return
+	if _, ok := state.GetOk("image"); !ok {
+		return nil, nil
 	}
 
 	artifact := &Artifact{
