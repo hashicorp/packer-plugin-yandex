@@ -139,10 +139,14 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 
 		// As `bucket` option validate input here
 		if p.config.Bucket == "" {
-			return nil, false, false, fmt.Errorf("To upload artfact you need to specify `bucket` value")
+			return nil, false, false, fmt.Errorf("To upload artifact you need to specify `bucket` value")
 		}
 
-		imageSrc, err = uploadToBucket(storageClient, ui, artifact, p.config.Bucket, p.config.ObjectName)
+		uploadedImage, err := uploadToBucket(storageClient, ui, artifact, p.config.Bucket, p.config.ObjectName)
+		if err != nil {
+			return nil, false, false, err
+		}
+		imageSrc, err = presignUrl(storageClient, ui, uploadedImage.GetSourceID())
 		if err != nil {
 			return nil, false, false, err
 		}
