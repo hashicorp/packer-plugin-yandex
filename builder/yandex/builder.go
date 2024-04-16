@@ -114,7 +114,8 @@ func (b *Builder) Run(ctx context.Context, ui packersdk.Ui, hook packersdk.Hook)
 	}
 
 	// If there are no images, then just return
-	if _, ok := state.GetOk("image"); !ok {
+	image, ok := state.GetOk("image")
+	if !ok {
 		return nil, nil
 	}
 
