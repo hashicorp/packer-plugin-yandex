@@ -48,7 +48,7 @@ func Test_s3URLToBucketKey(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotBucket, gotKey, err := s3URLToBucketKey(tt.storageURL)
+			gotBucket, gotKey, err := s3URLToBucketKey(tt.storageURL, "https://"+defaultStorageEndpoint)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("s3URLToBucketKey() error = %v, wantErr %v", err, tt.wantErr)
 				return

@@ -50,7 +50,7 @@ func newYCStorageClient(storageEndpoint, accessKey, secretKey string) (*s3.S3, e
 
 // Get path-style S3 URL and return presigned URL
 func presignUrl(s3conn *s3.S3, ui packersdk.Ui, fullUrl string) (cloudImageSource, error) {
-	bucket, key, err := s3URLToBucketKey(fullUrl)
+	bucket, key, err := s3URLToBucketKey(fullUrl, s3conn.Endpoint)
 	if err != nil {
 		return nil, err
 	}
@@ -74,8 +74,12 @@ func presignUrl(s3conn *s3.S3, ui packersdk.Ui, fullUrl string) (cloudImageSourc
 	}, nil
 }
 
-func s3URLToBucketKey(storageURL string) (bucket string, key string, err error) {
+func s3URLToBucketKey(storageURL string, storageEndpointURI string) (bucket string, key string, err error) {
 	u, err := url.Parse(storageURL)
+	if err != nil {
+		return
+	}
+	endpointURI, err := url.Parse(storageEndpointURI)
 	if err != nil {
 		return
 	}
@@ -86,14 +90,14 @@ func s3URLToBucketKey(storageURL string) (bucket string, key string, err error) 
 		key = strings.TrimLeft(u.Path, "/")
 	} else if u.Scheme == "https" {
 		// https://***.storage.yandexcloud.net/...
-		if u.Host == defaultStorageEndpoint {
+		if u.Host == endpointURI.Host {
 			// No bucket name in the host part
 			path := strings.SplitN(u.Path, "/", 3)
 			bucket = path[1]
 			key = path[2]
 		} else {
 			// Bucket name in host
-			bucket = strings.TrimSuffix(u.Host, "."+defaultStorageEndpoint)
+			bucket = strings.TrimSuffix(u.Host, "."+endpointURI.Host)
 			key = strings.TrimLeft(u.Path, "/")
 		}
 	}
