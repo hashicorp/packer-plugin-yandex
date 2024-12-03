@@ -32,6 +32,7 @@ type FlatConfig struct {
 	ImageProductIDs       []string          `mapstructure:"image_product_ids" required:"false" cty:"image_product_ids" hcl:"image_product_ids"`
 	ImagePooled           *bool             `mapstructure:"image_pooled" required:"false" cty:"image_pooled" hcl:"image_pooled"`
 	SkipCreateImage       *bool             `mapstructure:"skip_create_image" required:"false" cty:"skip_create_image" hcl:"skip_create_image"`
+	ImagePCITopology      *string           `mapstructure:"image_pci_topology" required:"false" cty:"image_pci_topology" hcl:"image_pci_topology"`
 	Bucket                *string           `mapstructure:"bucket" required:"false" cty:"bucket" hcl:"bucket"`
 	ObjectName            *string           `mapstructure:"object_name" required:"false" cty:"object_name" hcl:"object_name"`
 	SkipClean             *bool             `mapstructure:"skip_clean" required:"false" cty:"skip_clean" hcl:"skip_clean"`
@@ -71,6 +72,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"image_product_ids":          &hcldec.AttrSpec{Name: "image_product_ids", Type: cty.List(cty.String), Required: false},
 		"image_pooled":               &hcldec.AttrSpec{Name: "image_pooled", Type: cty.Bool, Required: false},
 		"skip_create_image":          &hcldec.AttrSpec{Name: "skip_create_image", Type: cty.Bool, Required: false},
+		"image_pci_topology":         &hcldec.AttrSpec{Name: "image_pci_topology", Type: cty.String, Required: false},
 		"bucket":                     &hcldec.AttrSpec{Name: "bucket", Type: cty.String, Required: false},
 		"object_name":                &hcldec.AttrSpec{Name: "object_name", Type: cty.String, Required: false},
 		"skip_clean":                 &hcldec.AttrSpec{Name: "skip_clean", Type: cty.Bool, Required: false},

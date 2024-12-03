@@ -102,6 +102,7 @@ type FlatConfig struct {
 	ImageProductIDs           []string          `mapstructure:"image_product_ids" required:"false" cty:"image_product_ids" hcl:"image_product_ids"`
 	ImagePooled               *bool             `mapstructure:"image_pooled" required:"false" cty:"image_pooled" hcl:"image_pooled"`
 	SkipCreateImage           *bool             `mapstructure:"skip_create_image" required:"false" cty:"skip_create_image" hcl:"skip_create_image"`
+	ImagePCITopology          *string           `mapstructure:"image_pci_topology" required:"false" cty:"image_pci_topology" hcl:"image_pci_topology"`
 	SourceImageFamily         *string           `mapstructure:"source_image_family" required:"true" cty:"source_image_family" hcl:"source_image_family"`
 	SourceImageFolderID       *string           `mapstructure:"source_image_folder_id" required:"false" cty:"source_image_folder_id" hcl:"source_image_folder_id"`
 	SourceImageID             *string           `mapstructure:"source_image_id" required:"false" cty:"source_image_id" hcl:"source_image_id"`
@@ -214,6 +215,7 @@ func (*FlatConfig) HCL2Spec() map[string]hcldec.Spec {
 		"image_product_ids":            &hcldec.AttrSpec{Name: "image_product_ids", Type: cty.List(cty.String), Required: false},
 		"image_pooled":                 &hcldec.AttrSpec{Name: "image_pooled", Type: cty.Bool, Required: false},
 		"skip_create_image":            &hcldec.AttrSpec{Name: "skip_create_image", Type: cty.Bool, Required: false},
+		"image_pci_topology":           &hcldec.AttrSpec{Name: "image_pci_topology", Type: cty.String, Required: false},
 		"source_image_family":          &hcldec.AttrSpec{Name: "source_image_family", Type: cty.String, Required: false},
 		"source_image_folder_id":       &hcldec.AttrSpec{Name: "source_image_folder_id", Type: cty.String, Required: false},
 		"source_image_id":              &hcldec.AttrSpec{Name: "source_image_id", Type: cty.String, Required: false},
