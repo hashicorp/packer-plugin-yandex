@@ -156,6 +156,8 @@ type ImageConfig struct {
 	ImagePooled bool `mapstructure:"image_pooled" required:"false"`
 	// Skip creating the image. Useful for setting to `true` during a build test stage. Defaults to `false`.
 	SkipCreateImage bool `mapstructure:"skip_create_image" required:"false"`
+	// PCI Topology version which will be used by the image
+	ImagePCITopology string `mapstructure:"image_pci_topology" required:"false"`
 }
 
 func (c *ImageConfig) Prepare(errs *packersdk.MultiError) *packersdk.MultiError {
