@@ -138,7 +138,7 @@ func deleteFromBucket(s3conn *s3.S3, ui packersdk.Ui, imageSrc cloudImageSource)
 		return fmt.Errorf("invalid argument for `deleteFromBucket` method: %v", v)
 	}
 
-	bucket, objectName, err := s3URLToBucketKey(url)
+	bucket, objectName, err := s3URLToBucketKey(url, s3conn.Endpoint)
 	if err != nil {
 		return err
 	}
