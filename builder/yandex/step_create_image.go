@@ -37,6 +37,17 @@ func (s *stepCreateImage) Run(ctx context.Context, state multistep.StateBag) mul
 	ctx, cancel := context.WithTimeout(ctx, c.StateTimeout)
 	defer cancel()
 
+	var hardwareGeneration *compute.HardwareGeneration
+	if c.ImagePCITopology != "" {
+		if pciTopologyValue, ok := compute.PCITopology_value[c.ImagePCITopology]; ok {
+			hardwareGeneration = &compute.HardwareGeneration{
+				Features: &compute.HardwareGeneration_LegacyFeatures{
+					LegacyFeatures: &compute.LegacyHardwareFeatures{PciTopology: compute.PCITopology(pciTopologyValue)},
+				},
+			}
+		}
+	}
+
 	op, err := sdk.WrapOperation(sdk.Compute().Image().Create(ctx, &compute.CreateImageRequest{
 		FolderId:    c.TargetImageFolderID,
 		Name:        c.ImageName,
@@ -49,6 +60,7 @@ func (s *stepCreateImage) Run(ctx context.Context, state multistep.StateBag) mul
 		Source: &compute.CreateImageRequest_DiskId{
 			DiskId: diskID,
 		},
+		HardwareGeneration: hardwareGeneration,
 	}))
 	if err != nil {
 		return StepHaltWithError(state, fmt.Errorf("Error creating image: %s", err))
