@@ -57,7 +57,7 @@ func getInstanceIPAddress(c *Config, instance *compute.Instance) (address string
 
 	if c.UseIPv6 {
 		if addrIPV6Addr != "" {
-			return "[" + addrIPV6Addr + "]", nil
+			return addrIPV6Addr, nil
 		}
 		return "", errors.New("instance has no one IPv6 address")
 	}
