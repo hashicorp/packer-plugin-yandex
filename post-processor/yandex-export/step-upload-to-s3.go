@@ -41,7 +41,7 @@ func (s *StepUploadToS3) Run(ctx context.Context, state multistep.StateBag) mult
 		return yandex.StepHaltWithError(state, err)
 	}
 	if cmdUploadToS3.ExitStatus() != 0 {
-		return yandex.StepHaltWithError(state, fmt.Errorf("Cannout upload to S3, exit code %d", cmdUploadToS3.ExitStatus()))
+		return yandex.StepHaltWithError(state, fmt.Errorf("Cannot upload to S3, exit code %d", cmdUploadToS3.ExitStatus()))
 	}
 
 	versionExtraFlags, err := getVersionExtraFlags(ctx, comm)
