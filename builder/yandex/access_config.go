@@ -87,7 +87,7 @@ func (c *AccessConfig) Prepare(ctx *interpolate.Context) []error {
 			// else check for a valid json data value
 			var f map[string]interface{}
 			if err := json.Unmarshal([]byte(c.ServiceAccountKeyFile), &f); err != nil {
-				errs = append(errs, fmt.Errorf("JSON in %q are not valid: %s", c.ServiceAccountKeyFile, err))
+				errs = append(errs, fmt.Errorf("JSON in %q is not valid: %s", c.ServiceAccountKeyFile, err))
 			}
 			c.saKeyType = Content
 		}

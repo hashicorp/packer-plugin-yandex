@@ -30,14 +30,14 @@ type Config struct {
 	// The name of the bucket where the qcow2 file will be uploaded to for import.
 	// This bucket must exist when the post-processor is run.
 	//
-	// If import occurred after Yandex-Export post-processor, artifact already
+	// If import occurred after Yandex-Export post-processor, artifact is already
 	// in storage service and first paths (URL) is used to, so no need to set this param.
 	Bucket string `mapstructure:"bucket" required:"false"`
 	// The name of the object key in `bucket` where the qcow2 file will be copied to import.
 	// This is a [template engine](/packer/docs/templates/legacy_json_templates/engine).
 	// Therefore, you may use user variables and template functions in this field.
 	ObjectName string `mapstructure:"object_name" required:"false"`
-	// Whether skip removing the qcow2 file uploaded to Storage
+	// Whether to skip removing the qcow2 file uploaded to Storage
 	// after the import process has completed. Possible values are: `true` to
 	// leave it in the bucket, `false` to remove it. Default is `false`.
 	SkipClean bool `mapstructure:"skip_clean" required:"false"`
@@ -126,7 +126,7 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 
 	storageClient, err := newYCStorageClient("", respWithKey.GetAccessKey().GetKeyId(), respWithKey.GetSecret())
 	if err != nil {
-		return nil, false, false, fmt.Errorf("error create object storage client: %s", err)
+		return nil, false, false, fmt.Errorf("error creating object storage client: %s", err)
 	}
 
 	switch artifact.BuilderId() {
@@ -139,7 +139,7 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 
 		// As `bucket` option validate input here
 		if p.config.Bucket == "" {
-			return nil, false, false, fmt.Errorf("To upload artfact you need to specify `bucket` value")
+			return nil, false, false, fmt.Errorf("To upload artifact you need to specify `bucket` value")
 		}
 
 		imageSrc, err = uploadToBucket(storageClient, ui, artifact, p.config.Bucket, p.config.ObjectName)
@@ -190,7 +190,7 @@ func (p *PostProcessor) PostProcess(ctx context.Context, ui packersdk.Ui, artifa
 		AccessKeyId: respWithKey.GetAccessKey().GetId(),
 	})
 	if err != nil {
-		return nil, false, false, fmt.Errorf("error delete static access key: %s", err)
+		return nil, false, false, fmt.Errorf("error deleting static access key: %s", err)
 	}
 
 	return &Artifact{
@@ -218,5 +218,5 @@ func chooseSource(a packersdk.Artifact) (cloudImageSource, error) {
 			url: a.State("source_id").(string),
 		}, nil
 	}
-	return nil, fmt.Errorf("unknow source type of yandex-import artifact: %s", st)
+	return nil, fmt.Errorf("unknown source type of yandex-import artifact: %s", st)
 }

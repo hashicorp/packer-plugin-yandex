@@ -59,24 +59,24 @@ func getInstanceIPAddress(c *Config, instance *compute.Instance) (address string
 		if addrIPV6Addr != "" {
 			return "[" + addrIPV6Addr + "]", nil
 		}
-		return "", errors.New("instance has no one IPv6 address")
+		return "", errors.New("instance has no IPv6 address")
 	}
 
 	if c.UseInternalIP {
 		if addrIPV4Internal != "" {
 			return addrIPV4Internal, nil
 		}
-		return "", errors.New("instance has no one IPv4 internal address")
+		return "", errors.New("instance has no IPv4 internal address")
 	}
 	if addrIPV4External != "" {
 		return addrIPV4External, nil
 	}
-	return "", errors.New("instance has no one IPv4 external address")
+	return "", errors.New("instance has no IPv4 external address")
 }
 
 func instanceAddresses(instance *compute.Instance) (ipV4Int, ipV4Ext, ipV6 string, err error) {
 	if len(instance.NetworkInterfaces) == 0 {
-		return "", "", "", errors.New("No one network interface found for an instance")
+		return "", "", "", errors.New("No network interface found for an instance")
 	}
 
 	var ipV4IntFound, ipV4ExtFound, ipV6Found bool
@@ -102,7 +102,7 @@ func instanceAddresses(instance *compute.Instance) (ipV4Int, ipV4Ext, ipV6 strin
 	}
 
 	if !ipV4IntFound {
-		// internal ipV4 address always should present
+		// internal IPv4 address should always be present
 		return "", "", "", errors.New("No IPv4 internal address found. Bug?")
 	}
 
